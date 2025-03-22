@@ -5,9 +5,232 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fake News Detector</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    {% comment %} <link rel="stylesheet" href="static/css/styles.css"> {% endcomment %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector</title>
 </head>
+<style>
+    :root {
+        --color-primary: #4a6fa5;
+        --color-secondary: #334e68;
+        --color-true: #10b981;
+        --color-true-light: #d1fae5;
+        --color-false: #ef4444;
+        --color-false-light: #fee2e2;
+        --color-background: #f8fafc;
+        --color-text: #1e293b;
+        --color-text-light: #64748b;
+        --color-border: #e2e8f0;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --radius: 0.5rem;
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--color-background);
+        color: var(--color-text);
+        line-height: 1.6;
+      }
+      
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+      
+      header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+      }
+      
+      h1 {
+        color: var(--color-primary);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .subtitle {
+        color: var(--color-text-light);
+        font-size: 1.1rem;
+      }
+      
+      .input-group {
+        margin-bottom: 1.5rem;
+      }
+      
+      textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 1rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        font-size: 1rem;
+        resize: vertical;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+      
+      textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+      }
+      
+      .btn-analyze {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.1s;
+      }
+      
+      .btn-analyze:hover {
+        background-color: var(--color-secondary);
+      }
+      
+      .btn-analyze:active {
+        transform: translateY(1px);
+      }
+      
+      .result-container {
+        margin-top: 2.5rem;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+      }
+      
+      .result-true {
+        border: 1px solid var(--color-true);
+        background-color: var(--color-true-light);
+      }
+      
+      .result-false {
+        border: 1px solid var(--color-false);
+        background-color: var(--color-false-light);
+      }
+      
+      .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      
+      .result-true .result-header {
+        background-color: var(--color-true);
+        color: white;
+      }
+      
+      .result-false .result-header {
+        background-color: var(--color-false);
+        color: white;
+      }
+      
+      .verdict-badge {
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .verdict-true {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      
+      .verdict-false {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      
+      .result-details {
+        padding: 1.5rem;
+      }
+      
+      .result-details h3 {
+        margin-bottom: 0.75rem;
+        font-size: 1.1rem;
+      }
+      
+      .confidence-meter {
+        margin: 1.5rem 0;
+      }
+      
+      .confidence-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+      
+      .meter-container {
+        height: 0.75rem;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 1rem;
+        overflow: hidden;
+      }
+      
+      .meter-fill {
+        height: 100%;
+        border-radius: 1rem;
+        transition: width 1s ease-out;
+      }
+      
+      .result-true .meter-fill {
+        background-color: var(--color-true);
+      }
+      
+      .result-false .meter-fill {
+        background-color: var(--color-false);
+      }
+      
+      .factors ul {
+        list-style-position: inside;
+        margin-left: 0.5rem;
+      }
+      
+      .factors li {
+        margin-bottom: 0.5rem;
+      }
+      
+      footer {
+        margin-top: 3rem;
+        text-align: center;
+        color: var(--color-text-light);
+        font-size: 0.875rem;
+      }
+      
+      @media (max-width: 640px) {
+        .container {
+          padding: 1rem;
+        }
+        
+        h1 {
+          font-size: 2rem;
+        }
+        
+        .result-header {
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+</style>
 <body>
     <div class="container">
         <header>
@@ -16,7 +239,8 @@
         </header>
         
         <main>
-            <form id="news-form" method="post" action="{% url 'detect' %}">
+            <form id="news-form" method="post">
+                {% comment %} <form id="news-form" method="post" action="{% url 'detect' %}"> {% endcomment %}
                 {% csrf_token %}
                 <div class="input-group">
                     <textarea 
@@ -69,7 +293,42 @@
             <p>This tool uses advanced AI to analyze news content. Results should be verified with additional sources.</p>
         </footer>
     </div>
-    
-    <script src="{% static 'js/detector.js' %}"></script>
+    {% comment %} {% block js %} {% endcomment %}
+        <script >document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('news-form');
+            const resultContainer = document.getElementById('result-container');
+            
+            // Add smooth animation when results appear
+            if (resultContainer) {
+                setTimeout(() => {
+                    resultContainer.style.opacity = '1';
+                    
+                    // Animate the confidence meter
+                    const meterFill = document.querySelector('.meter-fill');
+                    if (meterFill) {
+                        const targetWidth = meterFill.style.width;
+                        meterFill.style.width = '0%';
+                        setTimeout(() => {
+                            meterFill.style.width = targetWidth;
+                        }, 300);
+                    }
+                }, 100);
+            }
+            
+            // Add form submission animation
+            if (form) {
+                form.addEventListener('submit', function() {
+                    const button = document.querySelector('.btn-analyze');
+                    button.textContent = 'Analyzing...';
+                    button.disabled = true;
+                    
+                    // If there's an existing result, fade it out
+                    if (resultContainer) {
+                        resultContainer.style.opacity = '0.5';
+                    }
+                });
+            }
+        });</script>
+    {% comment %} {% endblock %} {% endcomment %}
 </body>
 </html>
