@@ -1,14 +1,75 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Home-Fake News Detector</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% comment %} <link rel="stylesheet" href="static/css/styles.css"> {% endcomment %}
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>Fake News Detector</h1>
+            <p class="subtitle">Verify the authenticity of news articles with AI-powered analysis</p>
+        </header>
+        
+        <main>
+            <form id="news-form" method="post" action="{% url 'detect' %}">
+                {% csrf_token %}
+                <div class="input-group">
+                    <textarea 
+                        name="news_text" 
+                        id="news-text" 
+                        placeholder="Paste news article or headline here..." 
+                        required
+                    >{{ news_text|default:'' }}</textarea>
+                </div>
+                <button type="submit" class="btn-analyze">Analyze</button>
+            </form>
+            
+            {% if result %}
+            <div id="result-container" class="result-container {% if is_real %}result-true{% else %}result-false{% endif %}">
+                <div class="result-header">
+                    <h2>Analysis Result</h2>
+                    <div class="verdict-badge {% if is_real %}verdict-true{% else %}verdict-false{% endif %}">
+                        {% if is_real %}
+                            <span>✓ TRUE</span>
+                        {% else %}
+                            <span>✗ FALSE</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="result-details">
+                    <h3>Explanation:</h3>
+                    <p>{{ explanation }}</p>
+                    
+                    <div class="confidence-meter">
+                        <div class="confidence-label">Confidence: {{ confidence }}%</div>
+                        <div class="meter-container">
+                            <div class="meter-fill" style="width: {{ confidence }}%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="factors">
+                        <h3>Key Factors:</h3>
+                        <ul>
+                            {% for factor in factors %}
+                                <li>{{ factor }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+        
+        <footer>
+            <p>This tool uses advanced AI to analyze news content. Results should be verified with additional sources.</p>
+        </footer>
+    </div>
     
+    <script src="{% static 'js/detector.js' %}"></script>
 </body>
 </html>
