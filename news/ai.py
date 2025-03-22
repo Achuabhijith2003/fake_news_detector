@@ -26,10 +26,17 @@ class AI:
         self.retrivered_doc_content=" ".join([doc.page_content for doc in retrivered_doc ])
         
         
-    # promt template
     def Promt(self):
-        self.promt_template=PromptTemplate(template="Read this para carefully {retrivered_doc} and Question: {query} , responed with true or false ")
-        
+        self.promt_template = PromptTemplate(
+            template="""
+            Read this paragraph carefully: {retrivered_doc}
+
+            Question: {query}
+
+            Respond with a JSON object in the following format:
+            {{'news_text': {query} ,'is_real': true/false, 'explanation': 'your explanation here'}}
+            """
+        )
     # using llm
     def model(self):
         llm=ChatGoogleGenerativeAI(model="gemini-2.0-flash",verbose=True,temperature=0.1,api_key=Gemini_key)
@@ -39,6 +46,7 @@ class AI:
         )
         respones=llm.invoke(input=promt)
         print (respones.content)
+        return respones.content
 
 # path_data = "D:/KMCT/miniproject/fakdec/Datasets"
 path_db = "news/models"
