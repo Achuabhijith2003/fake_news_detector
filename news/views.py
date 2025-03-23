@@ -46,7 +46,7 @@ def process_result(result_string):
 
         #add confidence and factors.
         confidence = result_json.get("confidence") #add a default confidence.
-        factors = result_json.get("factors", ["None"]) #add default factors.
+        factors = result_json.get("factors") #add default factors.
         return {"news_text": news_text,"result":True, "is_real": is_real, "explanation": explanation, "confidence": confidence, "factors": factors}
         # return {"news_text": news_text,"result":True, "is_real": is_real, "explanation": explanation}
 
