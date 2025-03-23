@@ -42,7 +42,7 @@ class AI:
            
 
             Respond with a JSON object in the following format:
-            {{'news_text': {query} ,'is_real': True/False, 'explanation': 'your explanation here'}}
+            {{'news_text': {query} ,'is_real': True/False, 'explanation': 'your explanation here','confidence': 'in int type '}}
             """
         )
     # using llm

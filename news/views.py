@@ -45,10 +45,10 @@ def process_result(result_string):
         explanation = result_json.get("explanation")
 
         #add confidence and factors.
-        confidence = result_json.get("confidence",90) #add a default confidence.
+        confidence = result_json.get("confidence") #add a default confidence.
         factors = result_json.get("factors", ["None"]) #add default factors.
-        # return {"news_text": news_text, "is_real": is_real, "explanation": explanation, "confidence": confidence, "factors": factors}
-        return {"news_text": news_text,"result":True, "is_real": is_real, "explanation": explanation}
+        return {"news_text": news_text,"result":True, "is_real": is_real, "explanation": explanation, "confidence": confidence, "factors": factors}
+        # return {"news_text": news_text,"result":True, "is_real": is_real, "explanation": explanation}
 
     except (json.JSONDecodeError, AttributeError, TypeError) as e:
         print(f"Error processing result: {e}")
