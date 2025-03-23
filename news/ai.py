@@ -6,6 +6,7 @@ from google.generativeai import generative_models
 from .Config.config import Gemini_key
 from langchain.prompts.prompt import PromptTemplate
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings #import the correct model.
+import datetime
 
 
 class AI:
@@ -27,22 +28,31 @@ class AI:
         
         
     def Promt(self):
+        
         self.promt_template = PromptTemplate(
             template="""
+            You anr an AI Agent to detect the fake news. Remember in any chage in data ,time meaning of the paragraph 
+            you must replay accordingly, the give paragraph is the correct news, Question may have mistakes in data, time, meanning 
             Read this paragraph carefully: {retrivered_doc}
+            
+            today date : {date_time}
 
             Question: {query}
+            
+           
 
             Respond with a JSON object in the following format:
-            {{'news_text': {query} ,'is_real': true/false, 'explanation': 'your explanation here'}}
+            {{'news_text': {query} ,'is_real': True/False, 'explanation': 'your explanation here'}}
             """
         )
     # using llm
     def model(self):
+        date_time=datetime.datetime.now()
         llm=ChatGoogleGenerativeAI(model="gemini-2.0-flash",verbose=True,temperature=0.1,api_key=Gemini_key)
         promt= self.promt_template.format(
             retrivered_doc=self.retrivered_doc_content,
-            query=self.query
+            query=self.query,
+            date_time=date_time
         )
         respones=llm.invoke(input=promt)
         print (respones.content)
