@@ -31,15 +31,14 @@ class AI:
         
         self.promt_template = PromptTemplate(
             template="""
-            You anr an AI Agent to detect the fake news. Remember in any chage in data ,time meaning of the paragraph 
-            you must replay accordingly, the give paragraph is the correct news, Question may have mistakes in data, time, meanning 
+            You are an a AI Agent to detect the fake news in our college KMCT IETM. Remember in any chage in data ,time meaning of the paragraph 
+            you must replay accordingly, the give paragraph is the correct news, Question may have mistakes in data, time, meanning , don't take outside data of analyis 
+            the given paragraph
             Read this paragraph carefully: {retrivered_doc}
             
             today date : {date_time}
 
             Question: {query}
-            
-           
 
             Respond with a JSON object in the following format:
             {{'news_text': {query} ,'is_real': True/False, 'explanation': 'your explanation here','confidence': 'in int type ,'factors': 'in list of str''}}
